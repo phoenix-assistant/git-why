@@ -119,3 +119,50 @@ A VS Code extension will show inline "why" tooltips on hover — powered by `git
 ## License
 
 MIT © Phoenix AI Hub
+
+---
+
+## Architecture
+
+```
+git-why
+├── src/
+│   ├── cli.ts         # Commander CLI entry point
+│   ├── blame.ts       # git blame wrapper + line extraction
+│   ├── refs.ts        # Commit message ref pattern extraction
+│   ├── github.ts      # gh CLI wrapper for PR/issue lookups
+│   ├── cache.ts       # .git-why/cache.json with TTL
+│   └── format.ts      # Terminal output formatting
+└── tests/
+```
+
+**Flow:** `git blame line` → `extract commit SHA` → `parse commit message for refs` → `gh api lookup PR + issue` → `render`
+
+---
+
+## CI Setup
+
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
